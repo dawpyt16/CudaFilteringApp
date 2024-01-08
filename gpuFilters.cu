@@ -6,10 +6,17 @@
 #include <cuda.h>
 #include "cuda_runtime.h"
 #include <device_launch_parameters.h>
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/generate.h>
+#include <thrust/sort.h>
+#include <thrust/copy.h>
 
-#define BLOCK_SIZE      16 //MAX 1024
+//#define BLOCK_SIZE      16 //MAX 1024
 #define FILTER_WIDTH    3       
-#define FILTER_HEIGHT   3       
+#define FILTER_HEIGHT   3      
+
+extern int BLOCK_SIZE;
 
 using namespace std;
 
@@ -195,7 +202,7 @@ __global__ void medianFilter(unsigned char* srcImage, unsigned char* dstImage, u
                     filterVector[ky * FILTER_WIDTH + kx] = srcImage[((y + ky) * width + (x + kx)) * channel + c];
                 }
             }
-            sort_select(filterVector);
+            sort_bubble(filterVector);
             dstImage[(y * width + x) * channel + c] = filterVector[(FILTER_WIDTH * FILTER_HEIGHT) / 2];
         }
     }
@@ -238,5 +245,5 @@ extern "C" void medianFilter_GPU_wrapper(const cv::Mat & input, cv::Mat & output
     float milliseconds = 0;
 
     cudaEventElapsedTime(&milliseconds, start, stop);
-    cout << "\nProcessing time on GPU (ms): " << milliseconds << "\n";
+    cout << "\nMedian processing time on GPU (ms): " << milliseconds << "\n";
 }

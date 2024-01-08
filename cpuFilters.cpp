@@ -65,7 +65,6 @@ extern "C" void sharpeningFilter_CPU(const cv::Mat & input, cv::Mat & output)
 
     Mat kernel = (Mat_<double>(kernel_size, kernel_size) << -1, -1, -1, -1, 9, -1, -1, -1, -1);
 
-    // Normalizacja kernela
     kernel /= sum(kernel)[0];
 
     filter2D(input, output, ddepth, kernel, anchor, delta, BORDER_DEFAULT);
@@ -89,12 +88,11 @@ extern "C" void medianFilter_CPU(const cv::Mat & input, cv::Mat & output)
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&t1);
 
-    // Wybierz jeden rozmiar kernela, na przyk³ad kernel_size = 3
     medianBlur(input, output, kernel_size);
 
     QueryPerformanceCounter(&t2);
 
     double secs = static_cast<double>(t2.QuadPart - t1.QuadPart) / frequency.QuadPart;
 
-    cout << "\nProcessing time on CPU (ms): " << secs * 1000 << "\n";
+    cout << "\nMedian processing time on CPU (ms): " << secs * 1000 << "\n";
 }

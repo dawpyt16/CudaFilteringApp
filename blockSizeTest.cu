@@ -17,7 +17,7 @@ __global__ void MyKernel(int* a, int* b, int* c, int N)
 /********/
 /* MAIN */
 /********/
-extern "C" void blocksize_test_wrapper()
+extern "C" int blocksize_test_wrapper()
 {
     const int N = 1000000;
 
@@ -73,9 +73,10 @@ extern "C" void blocksize_test_wrapper()
     cudaMemcpy(h_vec3, d_vec3, N * sizeof(int), cudaMemcpyDeviceToHost);
 
     for (int i = 0; i < N; i++) {
-        if (h_vec3[i] != h_vec4[i]) { printf("Error at i = %i! Host = %i; Device = %i\n", i, h_vec4[i], h_vec3[i]); return; };
+        if (h_vec3[i] != h_vec4[i]) { printf("Error at i = %i! Host = %i; Device = %i\n", i, h_vec4[i], h_vec3[i]); return 16; };
     }
 
     printf("Test passed\n");
-
+    
+    return blockSize;
 }
